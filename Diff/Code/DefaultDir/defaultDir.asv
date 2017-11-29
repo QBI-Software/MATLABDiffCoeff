@@ -1,0 +1,244 @@
+function varargout = defaultDir(varargin)
+% DEFAULTDIR MATLAB code for defaultDir.fig
+%      DEFAULTDIR, by itself, creates a new DEFAULTDIR or raises the existing
+%      singleton*.
+%
+%      H = DEFAULTDIR returns the handle to a new DEFAULTDIR or the handle to
+%      the existing singleton*.
+%
+%      DEFAULTDIR('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in DEFAULTDIR.M with the given input arguments.
+%
+%      DEFAULTDIR('Property','Value',...) creates a new DEFAULTDIR or raises the
+%      existing singleton*.  Starting from the left, property value pairs are
+%      applied to the GUI before defaultDir_OpeningFcn gets called.  An
+%      unrecognized property name or invalid value makes property application
+%      stop.  All inputs are passed to defaultDir_OpeningFcn via varargin.
+%
+%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      instance to run (singleton)".
+%
+% See also: GUIDE, GUIDATA, GUIHANDLES
+
+% Edit the above text to modify the response to help defaultDir
+
+% Last Modified by GUIDE v2.5 15-Nov-2017 09:15:58
+
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @defaultDir_OpeningFcn, ...
+                   'gui_OutputFcn',  @defaultDir_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+
+
+% --- Executes just before defaultDir is made visible.
+function defaultDir_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to defaultDir (see VARARGIN)
+
+% Choose default command line output for defaultDir
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% UIWAIT makes defaultDir wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
+
+
+% --- Outputs from this function are returned to the command line.
+function varargout = defaultDir_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+currentDir = cd;
+addpath(fullfile([currentDir '\Code\DefaultDir\FolderLoc']));
+load('defaultdir.mat');
+
+% check if the fields and display text if not empty
+exist fileLoc;
+if ans == 1
+    set(handles.fileloc,'String',fileLoc);
+    handles.fileLoc = fileLoc;
+else
+    set(handles.fileLoc,'String','Please set the file location directory'
+end
+
+exist mainLoc;  
+if ans == 1
+    set(handles.diffmaintext,'String',mainLoc);
+    handles.mainLoc = mainLoc;
+end
+
+exist opFile;
+if ans == 1
+    set(handles.FileOut,'String',opFile);
+    handles.opFile = opFile;
+end
+
+    guidata(hObject,handles);
+    
+function fileloc_Callback(hObject, eventdata, handles)
+% hObject    handle to fileloc (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of fileloc as text
+%        str2double(get(hObject,'String')) returns contents of fileloc as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function fileloc_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fileloc (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in filelocbutton.
+function filelocbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to filelocbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fileLoc = handles.fileLoc;
+defFileLoc = uigetdir(fileLoc,...
+                   'Please select location of the default file directory');
+
+  if isequal(defFileLoc,0)
+      return
+  end
+  
+defaultSets = matfile('defaultdir.mat','Writable',true);
+defaultSets.fileLoc = [];
+defaultSets.fileLoc = defFileLoc;
+set(handles.fileloc,'String',defFileLoc);
+
+
+function matlabdirtext_Callback(hObject, eventdata, handles)
+% hObject    handle to matlabdirtext (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of matlabdirtext as text
+%        str2double(get(hObject,'String')) returns contents of matlabdirtext as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function matlabdirtext_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to matlabdirtext (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function diffmaintext_Callback(hObject, eventdata, handles)
+% hObject    handle to diffmaintext (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of diffmaintext as text
+%        str2double(get(hObject,'String')) returns contents of diffmaintext as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function diffmaintext_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to diffmaintext (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in diffmain.
+function diffmain_Callback(hObject, eventdata, handles)
+% hObject    handle to diffmain (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+mainLoc = handles.mainLoc;
+defMainLoc = uigetdir(mainLoc,...
+                              'Please select location of the MATLAB code');
+
+  if isequal(defMainLoc,0)
+      return
+  end
+  
+defaultSets = matfile('defaultdir.mat','Writable',true);
+defaultSets.matlabLoc = [];
+defaultSets.matlabLoc = defMainLoc;
+set(handles.matlabdirtext,'String',defMainLoc);
+
+
+% --- Executes on button press in OutputButton.
+function OutputButton_Callback(hObject, eventdata, handles)
+% hObject    handle to OutputButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fileLoc = handles.fileLoc;
+defFileLoc = uigetdir(fileLoc,...
+                   'Please select location of the default file directory');
+
+  if isequal(defFileLoc,0)
+      return
+  end
+  
+defaultSets = matfile('defaultdir.mat','Writable',true);
+defaultSets.FileOut = [];
+defaultSets.FileOut = defFileLoc;
+set(handles.FileOut,'String',defFileLoc);
+
+
+function FileOut_Callback(hObject, eventdata, handles)
+% hObject    handle to FileOut (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of FileOut as text
+%        str2double(get(hObject,'String')) returns contents of FileOut as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function FileOut_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to FileOut (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
